@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viya + Databricks Overview</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --ink: #1f2430;
+      --muted: #5e6674;
+      --panel: #fffdf9;
+      --line: #e2d9c9;
+      --brand: #4c6bff;
+      --brand-soft: #ecf0ff;
+      --databricks: #1b6ef5;
+      --gold: #d7a946;
+      --shadow: 0 20px 50px rgba(25, 31, 40, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f8f4ee 0%, #f4efe7 100%);
+      color: var(--ink);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0 28px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-link {
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.4);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.05em;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 2vw, 2.4rem);
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1.04rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 28px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 12px;
+    }
+
+    .hero-card, .panel {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 24px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .step {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 16px;
+      min-height: 150px;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand);
+    }
+
+    .step p {
+      margin: 0;
+      font-size: 0.98rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+
+    .databricks-badge {
+      background: rgba(27, 110, 245, 0.08);
+      color: var(--databricks);
+    }
+
+    ul {
+      margin: 14px 0 0 18px;
+      padding: 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-note {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 820px) {
+      .hero, .grid, .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">VB</span>
+        <span>
+          <strong>Viya Bridge</strong>
+          <small>Databricks connection studio</small>
+        </span>
+      </a>
+      <a class="nav-link" href="index.html">Back to app</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">SAS + Databricks</div>
+          <h1>Bring the lakehouse into Viya.</h1>
+          <p>
+            This project is a live demo and design concept for moving Databricks data into a SAS Viya environment,
+            landing it in a CAS library, and preparing it for analytics and model workflows.
+          </p>
+        </div>
+        <div class="hero-card">
+          <div class="badge databricks-badge">Databricks source</div>
+          <div class="badge">SAS Viya target</div>
+          <p>
+            The main idea is simple: keep data in the lakehouse, use SAS to understand and process it, then expose the data
+            in a caslib-ready format for downstream work.
+          </p>
+        </div>
+      </section>
+
+      <section class="stack">
+        <div class="panel">
+          <h2>The core flow</h2>
+          <div class="flow">
+            <div class="step">
+              <strong>01</strong>
+              <p>Databricks stores the source tables and business data.</p>
+            </div>
+            <div class="step">
+              <strong>02</strong>
+              <p>SAS connects to the Databricks endpoint using a supported pattern.</p>
+            </div>
+            <div class="step">
+              <strong>03</strong>
+              <p>The data is loaded into a CAS library for analytic processing.</p>
+            </div>
+            <div class="step">
+              <strong>04</strong>
+              <p>Profiling, validation, and modeling preparation begin in Viya.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <div class="badge">Why this project exists</div>
+            <p>
+              Real customers often want to keep a governed lakehouse in Databricks while still making use of SAS Viya,
+              especially for analytics, forecasting, and model development. This repo demonstrates the connection pattern,
+              the data handoff, and the design principles behind the workflow.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="badge">What makes it safe</div>
+            <p>
+              The browser does not hold credentials. The generated SAS snippets illustrate the route, while the actual token
+              or auth configuration is meant to live behind the SAS compute server or a secure enterprise auth layer.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="badge">Why CAS matters</div>
+            <p>
+              CAS is the high-performance in-memory layer used by Viya. By landing data into a CAS library, the project can
+              run validation checks, inspect key fields, and prepare data for a model or a reporting workflow.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="badge">What comes next</div>
+            <p>
+              The next steps are a live connection test, table discovery, quality checks, and a concrete modeling or forecasting use case.
+              This project is the foundation for that flow.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top: 24px;">
+        <h2>What is being demonstrated</h2>
+        <ul>
+          <li>Databricks as the source system for operational and analytics data.</li>
+          <li>SAS Viya as the analytics layer that reads, profiles, and transforms the data.</li>
+          <li>CAS as the in-memory landing area for modeling and exploration.</li>
+          <li>Secure system design where secrets are not embedded in the browser or generated code.</li>
+        </ul>
+      </section>
+
+      <div class="footer-note">
+        This project is a concept and demo for a Databricks-to-Viya analytics pattern. It is designed to make the architecture easier to understand before a production implementation is built.
+      </div>
+    </main>
+  </div>
+</body>
+</html>
