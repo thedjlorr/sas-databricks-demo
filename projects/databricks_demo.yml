@@ -1,0 +1,91 @@
+# Databricks Modeling Demo (MCP) dataset config
+# One file per dataset. Every SAS program / builder takes its parameters
+# from here (as keyword defaults or call overrides); no dataset names or
+# column names belong in code. Track decisions in notes/databricks_demo_decisions.md.
+#
+# NOTE: this template was bootstrapped from sas-mcp-forecasting, which is a
+# forecasting-only process. The `time:`, `targets:`, `hierarchy:` and
+# `model_studio:` blocks below assume a Visual Forecasting use case — they
+# are placeholders, not a decision. Once the modeling scope is chosen
+# (forecasting vs. something else), either fill them in or delete them and
+# replace with whatever shape fits (e.g. a `classification:` block for an
+# ML Pipeline Automation project).
+
+project:
+  id: databricks_demo                          # short slug; prefixes all output tables
+  name: "Databricks Modeling Demo (MCP)"        # no versions/dates/"test" in the name
+  description: "TODO one sentence: what this demo shows, for whom, why."
+  content_folder: /Demo/Databricks_Modeling_Demo    # SAS Content folder mirroring this repo (not yet pushed)
+  model_studio_project_id: null         # only applies if scope ends up being VF forecasting
+
+viya:
+  base_url: https://verde-viya.mtes-tt.unx.sas.com
+  cas_server: cas-shared-default        # verify still current for this project
+
+databricks:
+  platform: databricks
+  workspace_host: adb-2401595702726378.18.azuredatabricks.net  # no https://
+  port: 443
+  http_path: sql/protocolv1/o/2401595702726378/0619-124631-x9a7aboi  # update with cluster
+  schema: default                          # catalog.schema or schema
+  properties: EnableArrow=0
+  auth_domain: DATABRICKS_AUTH  # Token-based auth via authinfo or inline password parameter                     # authinfo AUTHDOMAIN= entry; token itself never goes in this repo
+  table: CUSTOMER_PROFILE                     # Available: CUSTOMER_PROFILE, FINANCIAL_TRANSACTIONS, HMEQ, AUTOLOAN_1, LOAN_DATA_SET_CSV, STATE_EXP
+
+data:
+  working:                              # promoted copy loaded by sas/01_load_databricks_to_caslib.sas
+    caslib: DB_DEMO
+    table: CUSTOMER_PROFILE
+  output:
+    caslib: DB_DEMO
+    prefix: databricks_demo_                   # <slug>_outfor, <slug>_outstat, <slug>_readiness_*
+
+time:
+  id_variable: TODO
+  format: TODO                          # e.g. MMDDYY10. / DATE9.
+  interval: WEEK                        # WEEK | MONTH | DAY ...   (readiness check confirms)
+  seasonality: 52
+  last_observed: null                   # forecast origin — filled from the readiness check
+  horizon_rows_in_table: 0              # future rows already present with driver values
+  horizon: 12                           # lead
+  holdback: 0                           # back; use 8-12 for honest accuracy before quoting
+
+targets:
+  - name: TODO
+    accumulate: TOTAL                   # TOTAL | AVERAGE ...  (readiness: duplicate rows per period?)
+    missing: MISSING                    # MISSING | ZERO       (readiness: leading/trailing/interior?)
+    allow_negative: false
+
+by_variables:                           # order = hierarchy top -> leaf (readiness: series per level)
+  - TODO
+
+hierarchy:
+  enabled: true
+  reconciliation: middle_out            # top_down | bottom_up | middle_out
+  reconciliation_level: TODO            # name of the level; the builder takes its 0-based index
+
+independents:                           # drivers with future values
+  # - {name: TODO, accumulate: AVERAGE, future_values: exogenous_table}
+excluded:
+  # - TODO                              # e.g. a leading indicator not known at forecast time
+
+exogenous_prep:
+  date_variable: null
+  date_is_character: false
+  date_informat: null
+
+model_studio:
+  settings:
+    comparison_metric: MAPE             # read WAPE for cross-pipeline comparison
+    confidence_limit: 0.05
+    allow_negative: false
+  pipelines:                            # the builder renames "Pipeline 1" and adds the rest by template
+    - {name: "Auto-forecasting",         template: forecasting-auto-3}
+    - {name: "Hierarchical Forecasting", template: forecasting-hierarchical-1}
+    - {name: "Regression",               template: forecasting-regression-2}
+  custom_nodes: []
+
+data_readiness:
+  min_series_length: 26
+  max_missing_share: 0.5
+  require_future_regressors: true

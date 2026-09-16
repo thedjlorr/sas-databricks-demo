@@ -1,0 +1,44 @@
+:root {
+  --ink: #24383d;
+  --muted: #63777a;
+  --paper: #f2f6f6;
+  --panel: #ffffff;
+  --line: #d4e0e0;
+  --coral: #0879b1;
+  --coral-dark: #086b79;
+  --sage: #8fbfc2;
+  --deep-sage: #176c76;
+  --yellow: #f2c76d;
+  --databricks-orange: #e66a24;
+}
+
+body:before {
+  background-image: radial-gradient(#b8c9cb .7px, transparent .7px);
+}
+
+.databricks-label {
+  color: var(--databricks-orange);
+}
+
+.status-card {
+  background: #176c76;
+  border-color: #176c76;
+}
+
+.code-panel {
+  background: #263f43;
+  border-color: #263f43;
+}
+
+.idea-card {
+  background: #eef6f2;
+  border-color: #c7ded8;
+}
+
+.method-tab.active {
+  background: #eaf5f8;
+}
+
+.catalog-row:hover {
+  background: #f2fafb;
+}
