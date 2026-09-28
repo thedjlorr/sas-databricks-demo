@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eef4f7">
+  <title>Viya Bridge | Collection workflow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="workflow.css">
+</head>
+<body>
+  <div class="workflow-shell">
+    <header class="workflow-topbar">
+      <a class="brand" href="index.html" aria-label="Viya Bridge home"><span class="brand-mark">VB</span><span><strong>Viya Bridge</strong><small>Collection workflow</small></span></a>
+      <div class="topbar-actions"><span class="connection-pill"><span class="status-dot"></span> DB_TEST connected</span><a class="back-link" href="index.html">Connection studio</a></div>
+    </header>
+
+    <main>
+      <section class="workflow-hero">
+        <div><p class="eyebrow">SAS Viya / customer intelligence lab</p><h1>From collection signals<br><em>to a scored customer.</em></h1><p class="hero-copy">Join the customer story in CAS, shape a VA view, run a Model Studio champion, and decide what returns to <span class="databricks-text">Databricks</span>.</p></div>
+        <div class="hero-side"><span class="hero-number">02</span><span>Compose</span><span class="arrow">→</span><span>Score</span><span class="arrow">→</span><span>Return</span></div>
+      </section>
+
+      <section class="journey" aria-label="Workflow progress">
+        <div class="journey-step active"><span>01</span><div><strong>Assemble</strong><small>Join three tables</small></div></div><div class="journey-line"></div><div class="journey-step"><span>02</span><div><strong>Understand</strong><small>Build a VA report</small></div></div><div class="journey-line"></div><div class="journey-step"><span>03</span><div><strong>Model</strong><small>Find the champion</small></div></div><div class="journey-line"></div><div class="journey-step"><span>04</span><div><strong>Return</strong><small>Write back to lakehouse</small></div></div>
+      </section>
+
+      <section class="workflow-grid">
+        <div class="workflow-main">
+          <section class="workflow-panel" id="joinPanel">
+            <div class="panel-head"><div class="step-tag">01 / ASSEMBLE</div><span class="panel-state">CAS library · <strong>DB_TEST</strong></span></div>
+            <h2>Compose the customer base</h2><p class="panel-copy">Choose the three source tables that the SAS Studio job will join into a modeling-ready customer account view.</p>
+            <div class="table-pickers">
+              <label class="picker"><span class="picker-index">A</span><span><small>Customer spine</small><select id="tableCustomer"><option>CUSTOMER_PROFILE</option><option>AUTOLOAN_1</option><option>HMEQ</option></select></span></label>
+              <label class="picker"><span class="picker-index">B</span><span><small>Account / loan facts</small><select id="tableAccount"><option>AUTOLOAN_1</option><option>HMEQ</option><option>FINANCIAL_TRANSACTIONS</option></select></span></label>
+              <label class="picker"><span class="picker-index">C</span><span><small>Payment behavior</small><select id="tableBehavior"><option>FINANCIAL_TRANSACTIONS</option><option>STATE_EXP</option><option>LOAN_DATA_SET_CSV</option></select></span></label>
+            </div>
+            <div class="join-options"><label class="field"><span>Join key</span><input id="joinKey" value="CUSTOMER_ID"></label><label class="field"><span>Output table</span><input id="outputTable" value="CUSTOMER_RISK_BASE"></label><label class="toggle"><input type="checkbox" id="promoteToggle"><span class="toggle-ui"></span><span><strong>Promote result to DB_TEST</strong><small>Ask before making it available across Viya.</small></span></label></div>
+            <div class="panel-actions"><button class="sas-button" id="joinButton">Generate join program <span>→</span></button><span class="action-note" id="joinStatus">Ready to draft SAS Studio code</span></div>
+            <div class="code-drawer" id="joinCodeWrap" hidden><div class="code-toolbar"><span>sas_studio_customer_join.sas</span><button class="copy-button" id="copyJoin">Copy code</button></div><pre><code id="joinCode"></code></pre></div>
+          </section>
+
+          <section class="workflow-panel" id="reportPanel">
+            <div class="panel-head"><div class="step-tag">02 / UNDERSTAND</div><span class="panel-state">Visual Analytics</span></div>
+            <h2>Choose a collection report</h2><p class="panel-copy">Select a starting point for the business conversation. The selected report becomes the brief for the VA build.</p>
+            <div class="report-grid">
+              <button class="report-card selected" data-report="Portfolio pulse"><span class="report-icon">◒</span><strong>Portfolio pulse</strong><small>Balances, exposure, delinquency</small></button>
+              <button class="report-card" data-report="Collections queue"><span class="report-icon">↯</span><strong>Collections queue</strong><small>Prioritize accounts for contact</small></button>
+              <button class="report-card" data-report="Risk segments"><span class="report-icon">▦</span><strong>Risk segments</strong><small>Compare customer cohorts</small></button>
+              <button class="report-card" data-report="Branch performance"><span class="report-icon">⌁</span><strong>Branch performance</strong><small>Regional trends and outcomes</small></button>
+            </div>
+            <div class="report-result"><span class="result-check">✓</span><span><strong id="reportResultTitle">Portfolio pulse selected</strong><small>VA report brief is ready for the joined customer base.</small></span><button class="outline-button" id="buildReport">Build VA brief</button></div>
+          </section>
+
+          <section class="workflow-panel model-panel" id="modelPanel">
+            <div class="panel-head"><div class="step-tag">03 / MODEL</div><span class="panel-state model-state">Model Studio · AutoML</span></div>
+            <h2>Find the champion model</h2><p class="panel-copy">Give the run a business question. Model Studio will compare candidates and return a customer-level risk score for the selected population.</p>
+            <div class="model-prompt"><span class="prompt-mark">✦</span><textarea id="modelPrompt" rows="2">Predict the likelihood that a customer will become seriously delinquent in the next 90 days.</textarea><button class="run-button" id="runModel">Run AutoML <span>↗</span></button></div>
+            <div class="model-result" id="modelResult" hidden><div class="champion-badge">CHAMPION</div><div><strong>Gradient Boosting</strong><small>Risk score generated for 1,000 customers · AUC 0.84</small></div><span class="model-status">Complete</span></div>
+            <div class="save-row" id="saveRow" hidden><label class="toggle"><input type="checkbox" id="saveScores"><span class="toggle-ui"></span><span><strong>Save customer scores</strong><small>Customer number, account number, and risk score</small></span></label><button class="save-button" id="saveButton" disabled>Save scored dataset</button></div>
+          </section>
+
+          <section class="workflow-panel return-panel" id="returnPanel">
+            <div class="panel-head"><div class="step-tag">04 / RETURN</div><span class="panel-state databricks-state">Databricks destination</span></div>
+            <h2>Return the scored customers</h2><p class="panel-copy">Once the scored dataset is saved in Viya, choose whether the collection team should receive a copy back in the connected Databricks environment.</p>
+            <div class="return-destination"><div class="destination-mark">D</div><div><strong>DB_TEST · CUSTOMER_RISK_SCORES</strong><small>Databricks table · write-back destination</small></div><label class="toggle"><input type="checkbox" id="pushToggle" disabled><span class="toggle-ui"></span><span><strong>Push back to Databricks</strong><small>Requires confirmation in a live deployment.</small></span></label></div>
+            <div class="panel-actions"><button class="databricks-button" id="pushButton" disabled>Confirm write-back <span>↗</span></button><span class="action-note" id="pushStatus">Save the scored dataset first</span></div>
+          </section>
+        </div>
+
+        <aside class="workflow-side">
+          <section class="side-card live-card"><div class="side-label">RUN CONTROL</div><h3>Customer risk<br><em>collection lab.</em></h3><p>One guided surface for the handoff between Databricks, SAS Studio, Visual Analytics, and Model Studio.</p><div class="metric-row"><span><strong>1,000</strong><small>customers in scope</small></span><span><strong>DB_TEST</strong><small>working library</small></span></div></section>
+          <section class="side-card output-card"><div class="side-label">EXPECTED OUTPUT</div><div class="output-line"><span class="output-icon">01</span><span><strong>Joined customer base</strong><small>Promoted in CAS when approved</small></span></div><div class="output-line"><span class="output-icon">02</span><span><strong>VA collection view</strong><small>Report brief for the business team</small></span></div><div class="output-line"><span class="output-icon">03</span><span><strong>Risk score file</strong><small>Customer + account + score</small></span></div></section>
+          <section class="side-card guard-card"><span class="guard-icon">✓</span><div><strong>Demo-safe by design</strong><p>This screen previews SAS programs and decisions. A secure Viya service should own execution, credentials, and final write-back approval.</p></div></section>
+        </aside>
+      </section>
+    </main>
+    <footer><span>Viya Bridge · Collection workflow</span><span>SAS-first orchestration with <span class="databricks-text">Databricks</span> at the edge.</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="workflow.js"></script>
+</body>
+</html>
