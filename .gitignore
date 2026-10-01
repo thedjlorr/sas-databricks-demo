@@ -18,3 +18,8 @@ obj/
 
 # SAS documentation PDF/text cache (starter/sasdoc.py)
 docs/.sasdoc-cache/
+
+# demo video build outputs (rebuild with python docs/video/build_video.py --shots)
+docs/video/build/
+docs/video/page_*.png
+docs/video/edge-*/

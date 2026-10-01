@@ -1,0 +1,80 @@
+[
+ {
+  "kind": "card",
+  "title": "From three Databricks tables\nto a champion model",
+  "subtitle": "Viya Bridge demo, run live on SAS Viya",
+  "say": "This is Viya Bridge. Three small web apps that show how SAS Viya connects to Databricks, combines three tables, and turns them into reports and a champion model. Every result you will see was run live on our Viya environment."
+ },
+ {
+  "kind": "page",
+  "page": "landing",
+  "y": 0,
+  "say": "The landing page explains the pattern. Databricks stays the source of truth. SAS Viya reaches it through SAS Access to Spark, lands the data in a CAS library, and uses it for reporting and modeling."
+ },
+ {
+  "kind": "page",
+  "page": "landing",
+  "y": 720,
+  "say": "The project has three jobs. Establish a secure path, land the data in CAS, and validate it before any modeling starts."
+ },
+ {
+  "kind": "page",
+  "page": "studio",
+  "y": 0,
+  "say": "The second app is the Connection Studio. You choose how SAS should reach Databricks: SAS Access to Spark, JDBC, or a native CAS action. Then you fill in the workspace host, the HTTP path, and the schema."
+ },
+ {
+  "kind": "page",
+  "page": "studio",
+  "y": 990,
+  "say": "It writes the SAS program for you. There is no token in the code. Credentials are resolved on the SAS server, never in the browser and never in the program."
+ },
+ {
+  "kind": "page",
+  "page": "studio",
+  "y": 1720,
+  "say": "After the handoff, it lists the tables available in the connected workspace, ready to profile."
+ },
+ {
+  "kind": "page",
+  "page": "workflow",
+  "y": 0,
+  "say": "The third app is the Collection Workflow. It walks a collections analyst through four steps. Assemble the data, understand it in Visual Analytics, find a champion model, and decide what goes back to Databricks."
+ },
+ {
+  "kind": "page",
+  "page": "workflow",
+  "y": 1995,
+  "say": "We added a fifth step, live results. This is what actually ran. SAS read customer profile, account summary, and financial transactions from Databricks, thirteen thousand four hundred and ninety four rows each, and joined them on primary key into one CAS table with forty two columns."
+ },
+ {
+  "kind": "image",
+  "file": "webapp/assets/va_portfolio_overview.png",
+  "label": "Visual Analytics: Portfolio Overview",
+  "say": "From that table we built three Visual Analytics reports. The portfolio overview shows forty one million dollars in loans, five hundred and eight million dollars outstanding, and an average of sixteen days past due."
+ },
+ {
+  "kind": "image",
+  "file": "webapp/assets/va_risk_drivers.png",
+  "label": "Visual Analytics: Risk Drivers",
+  "say": "The risk drivers report compares accounts flagged for collections with the rest. Days past due, credit score change, and interest rate look almost the same for both groups. No single measure separates them, which is exactly why we hand the question to machine learning."
+ },
+ {
+  "kind": "image",
+  "file": "webapp/assets/va_contact_strategy.png",
+  "label": "Visual Analytics: Contact Strategy",
+  "say": "The contact strategy report breaks collections contact cost down by channel and by product. Call centre contact is the largest cost in every segment."
+ },
+ {
+  "kind": "page",
+  "page": "workflow",
+  "y": 2620,
+  "say": "Finally, Model Studio automated machine learning trained five candidate models to predict which accounts are flagged for collections, and picked a champion on KS. The winner is an ensemble. On validation data it scores an AUC of zero point nine four nine and a KS of zero point seven five six, misclassifying seven point seven percent of accounts. On held out test data it holds up, with an AUC of zero point nine five two."
+ },
+ {
+  "kind": "card",
+  "title": "Three tables. One join.\nReports and a champion.",
+  "subtitle": "SAS Viya and Databricks, from the same connection",
+  "say": "Three Databricks tables, one join in SAS Viya, three reports, and a champion model, all from the same connection. Thanks for watching."
+ }
+]
