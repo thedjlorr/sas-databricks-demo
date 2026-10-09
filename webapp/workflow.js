@@ -1,5 +1,23 @@
 const $ = (id) => document.getElementById(id);
 
+/* Fill the three table pickers with every table found in Databricks (see datasets.js). */
+(function fillTablePickers() {
+  const tables = window.DATASETS.databricks.tables;
+  const defaults = { tableCustomer: 'CUSTOMER_PROFILE', tableAccount: 'ACCOUNT_SUMMARY', tableBehavior: 'FINANCIAL_TRANSACTIONS' };
+  Object.keys(defaults).forEach((id) => {
+    const select = document.getElementById(id);
+    select.innerHTML = '';
+    tables.forEach((t) => {
+      const option = document.createElement('option');
+      option.textContent = t.name;
+      option.title = `${t.cols} columns, ${t.rows.toLocaleString('en-US')} rows`;
+      select.appendChild(option);
+    });
+    select.value = defaults[id];
+  });
+})();
+
+
 function showToast(message) {
   const toast = $('toast');
   toast.textContent = message;

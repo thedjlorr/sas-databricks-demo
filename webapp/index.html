@@ -53,9 +53,9 @@
               <label class="field"><span>Schema</span><input id="schema" value="default"></label>
               <label class="field wide"><span>HTTP path</span><input id="httpPath" value="sql/protocolv1/o/2401595702726378/0619-124631-x9a7aboi"></label>
               <label class="field"><span>Auth domain</span><input id="authDomain" value="DATABRICKS_AUTH"></label>
-              <label class="field"><span>Source table</span><input id="sourceTable" value="sales_weekly"></label>
+              <label class="field"><span>Source table</span><input id="sourceTable" value="CUSTOMER_PROFILE"></label>
               <label class="field"><span>Target CAS library</span><select id="caslib"><option>DB_DEMO</option><option>CASUSER</option><option>PUBLIC</option></select></label>
-              <label class="field"><span>Target table</span><input id="targetTable" value="sales_weekly"></label>
+              <label class="field"><span>Target table</span><input id="targetTable" value="CUSTOMER_PROFILE"></label>
             </div>
             <div class="panel-footer">
               <label class="check-label"><input type="checkbox" id="saveToDisk" checked><span>Persist a SASHDAT copy</span></label>
@@ -70,7 +70,8 @@
           </section>
 
           <section class="panel catalog-panel">
-            <div class="panel-heading compact"><div><p class="section-kicker">After the handoff</p><h2>Available data</h2></div><div class="catalog-controls"><span class="result-count" id="resultCount">6 assets</span><label class="search-box"><span>⌕</span><input id="searchInput" placeholder="Filter tables"></label></div></div>
+            <div class="panel-heading compact"><div><p class="section-kicker">After the handoff</p><h2>Available data</h2></div><div class="catalog-controls"><span class="result-count" id="resultCount">25 tables</span><label class="search-box"><span>⌕</span><input id="searchInput" placeholder="Filter tables"></label></div></div>
+            <div class="source-tabs" id="catalogTabs"></div>
             <div class="catalog-list" id="catalogList"></div>
           </section>
         </div>
@@ -91,6 +92,7 @@
     <footer><span>Viya Bridge · a working concept for the <span class="databricks-label">Databricks</span> Modeling Demo</span><span>Built around SAS code, not around secrets.</span></footer>
   </div>
   <div class="toast" id="toast" role="status"></div>
+  <script src="datasets.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

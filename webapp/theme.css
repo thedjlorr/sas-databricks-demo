@@ -42,3 +42,11 @@ body:before {
 .catalog-row:hover {
   background: #f2fafb;
 }
+
+/* dataset source tabs */
+.source-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+.source-tab{font:inherit;font-weight:600;font-size:12px;padding:6px 12px;border:1px solid #b7d1d5;border-radius:999px;background:#fff;color:#075579;cursor:pointer}
+.source-tab:hover{background:#eef6f8}
+.source-tab.active{background:#0878b7;border-color:#0878b7;color:#fff}
+.catalog-list{max-height:520px;overflow:auto}
+.catalog-row[data-table]{cursor:pointer}

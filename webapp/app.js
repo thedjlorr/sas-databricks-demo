@@ -1,13 +1,17 @@
-const catalog = [
-  { name: 'CUSTOMER_PROFILE', detail: 'DB_DEMO · promoted', type: 'TABLE', size: 'Auto-discovered' },
-  { name: 'FINANCIAL_TRANSACTIONS', detail: 'DB_DEMO · promoted', type: 'TABLE', size: 'Auto-discovered' },
-  { name: 'HMEQ', detail: 'DB_DEMO · promoted', type: 'TABLE', size: 'Auto-discovered' },
-  { name: 'AUTOLOAN_1', detail: 'DB_DEMO · promoted', type: 'TABLE', size: 'Auto-discovered' },
-  { name: 'LOAN_DATA_SET_CSV', detail: 'DB_DEMO · promoted', type: 'TABLE', size: 'Auto-discovered' },
-  { name: 'STATE_EXP', detail: 'DB_DEMO · generated', type: 'TABLE', size: 'Auto-discovered' }
-];
+const DS = window.DATASETS;
+const fmtBytes = (b) => (b >= 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
+const sources = {
+  databricks: {
+    label: `Databricks, schema ${DS.databricks.schema} (${DS.databricks.tables.length})`,
+    items: DS.databricks.tables.map(t => ({ name: t.name, detail: `${DS.databricks.library} · ${t.group}`, type: 'TABLE', size: `${t.cols} columns · ${t.rows.toLocaleString('en-US')} rows`, loadable: true }))
+  },
+  cas: {
+    label: `CAS caslib ${DS.cas.caslib} (${DS.cas.tables.length})`,
+    items: DS.cas.tables.map(t => ({ name: t.name, detail: `${DS.cas.caslib} · on disk, not loaded`, type: 'FILE', size: fmtBytes(t.bytes), loadable: false }))
+  }
+};
 
-const state = { method: 'spark' };
+const state = { method: 'spark', source: 'databricks' };
 const $ = (id) => document.getElementById(id);
 
 function value(id) { return $(id).value.trim(); }
@@ -36,11 +40,27 @@ function renderCode() {
   $('codeTitle').textContent = `${state.method === 'spark' ? 'The SAS connection' : state.method === 'jdbc' ? 'A JDBC route' : 'A native CAS load'}, made visible.`;
 }
 
+function renderTabs() {
+  const box = $('catalogTabs');
+  box.innerHTML = Object.keys(sources).map(k => `<button type="button" class="source-tab${k === state.source ? ' active' : ''}" data-source="${k}">${sources[k].label}</button>`).join('');
+  box.querySelectorAll('.source-tab').forEach(btn => btn.addEventListener('click', () => { state.source = btn.dataset.source; renderTabs(); renderCatalog($('searchInput').value); }));
+}
+
 function renderCatalog(filter = '') {
-  const filtered = catalog.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
-  $('resultCount').textContent = `${filtered.length} ${filtered.length === 1 ? 'asset' : 'assets'}`;
-  $('catalogList').innerHTML = filtered.length ? filtered.map(item => `<div class="catalog-row" data-table="${item.name}"><div class="catalog-name"><span class="table-icon">${item.type === 'REPORT' ? 'R' : 'T'}</span><span><strong>${item.name}</strong><small>${item.detail}</small></span></div><span class="catalog-type">${item.type}</span><span class="catalog-size">${item.size}</span><span class="row-arrow">→</span></div>`).join('') : '<div class="catalog-row"><span class="catalog-meta">No matching assets.</span></div>';
-  document.querySelectorAll('.catalog-row[data-table]').forEach(row => row.addEventListener('click', () => showToast(`${row.dataset.table}: schema preview coming next`)));
+  const items = sources[state.source].items;
+  const filtered = items.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
+  $('resultCount').textContent = `${filtered.length} ${filtered.length === 1 ? 'table' : 'tables'}`;
+  $('catalogList').innerHTML = filtered.length ? filtered.map(item => `<div class="catalog-row" data-table="${item.name}" data-loadable="${item.loadable}"><div class="catalog-name"><span class="table-icon">${item.type === 'FILE' ? 'F' : 'T'}</span><span><strong>${item.name}</strong><small>${item.detail}</small></span></div><span class="catalog-type">${item.type}</span><span class="catalog-size">${item.size}</span><span class="row-arrow">→</span></div>`).join('') : '<div class="catalog-row"><span class="catalog-meta">No matching tables.</span></div>';
+  document.querySelectorAll('.catalog-row[data-table]').forEach(row => row.addEventListener('click', () => {
+    if (row.dataset.loadable === 'true') {
+      $('sourceTable').value = row.dataset.table;
+      $('targetTable').value = row.dataset.table;
+      renderCode();
+      showToast(`${row.dataset.table} set as the source table. The SAS code above is updated.`);
+    } else {
+      showToast(`${row.dataset.table} is a file in caslib ${DS.cas.caslib}. Load it with PROC CASUTIL.`);
+    }
+  }));
 }
 
 function showToast(message) {
@@ -69,4 +89,5 @@ $('readinessButton').addEventListener('click', () => showToast('Readiness checks
 $('helpButton').addEventListener('click', () => showToast('Choose a method, tune the recipe, then generate SAS'));
 
 renderCode();
+renderTabs();
 renderCatalog();
