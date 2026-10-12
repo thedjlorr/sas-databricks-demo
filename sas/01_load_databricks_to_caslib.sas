@@ -13,6 +13,11 @@
                   Databricks cluster. Update them when the cluster changes.
                   The access token is deliberately not stored in this file.
 
+  Caslib  : DB_DEMO (created by 00_create_db_demo_caslib.sas) is a Spark-
+            source caslib that reads from Databricks, so it cannot hold
+            promoted tables. Pass target_caslib=CASUSER (or a PATH caslib)
+            when running this program.
+
   Auth    : SAS/ACCESS to Spark against Databricks typically authenticates
             with UID="token" and PWD=<personal access token>. NEVER hard-
             code the token here. Options, in order of preference:
