@@ -18,6 +18,24 @@ const $ = (id) => document.getElementById(id);
 })();
 
 
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    area.remove();
+    return ok;
+  }
+}
+
 function showToast(message) {
   const toast = $('toast');
   toast.textContent = message;
@@ -50,8 +68,7 @@ $('joinButton').addEventListener('click', () => {
 });
 
 $('copyJoin').addEventListener('click', async () => {
-  await navigator.clipboard.writeText(makeJoinCode());
-  showToast('Join program copied to clipboard');
+  showToast((await copyText(makeJoinCode())) ? 'Join program copied to clipboard' : 'Copy failed: select the code and copy it manually');
 });
 
 $('buildReport').addEventListener('click', () => {

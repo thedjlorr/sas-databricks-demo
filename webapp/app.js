@@ -63,6 +63,24 @@ function renderCatalog(filter = '') {
   }));
 }
 
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    area.remove();
+    return ok;
+  }
+}
+
 function showToast(message) {
   const toast = $('toast');
   toast.textContent = message;
@@ -82,7 +100,7 @@ $('generateButton').addEventListener('click', () => { renderCode(); showToast('S
 $('caslib').addEventListener('change', renderCode);
 $('saveToDisk').addEventListener('change', renderCode);
 $('searchInput').addEventListener('input', (event) => renderCatalog(event.target.value));
-$('copyButton').addEventListener('click', async () => { await navigator.clipboard.writeText(makeCode()); showToast('SAS code copied to clipboard'); });
+$('copyButton').addEventListener('click', async () => { showToast((await copyText(makeCode())) ? 'SAS code copied to clipboard' : 'Copy failed: select the code and copy it manually'); });
 $('downloadButton').addEventListener('click', () => { const blob = new Blob([makeCode()], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'viya_bridge_connection.sas'; link.click(); URL.revokeObjectURL(link.href); showToast('SAS file downloaded'); });
 $('connectButton').addEventListener('click', () => { const button = $('connectButton'); button.innerHTML = '<span class="pulse-icon"></span> Connection verified'; showToast('Demo handshake complete: CAS server is reachable'); });
 $('readinessButton').addEventListener('click', () => showToast('Readiness checks: keys, gaps, missingness, duplicates'));
