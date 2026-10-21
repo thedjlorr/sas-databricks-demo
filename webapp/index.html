@@ -64,7 +64,7 @@
           </section>
 
           <section class="panel code-panel">
-            <div class="panel-heading compact"><div><p class="section-kicker">Generated artifact</p><h2 id="codeTitle">The SAS connection, made visible.</h2></div><div class="code-actions"><button class="text-button" id="copyButton">Copy code</button><button class="text-button" id="downloadButton">Download .sas</button></div></div>
+            <div class="panel-heading compact"><div><p class="section-kicker">Generated artifact</p><h2 id="codeTitle">The SAS connection, made visible.</h2></div><div class="code-actions"><button class="text-button" id="runButton" hidden>Load into Viya</button><button class="text-button" id="copyButton">Copy code</button><button class="text-button" id="downloadButton">Download .sas</button></div></div>
             <div class="code-window"><div class="code-window-bar"><span class="traffic red"></span><span class="traffic yellow"></span><span class="traffic green"></span><span class="file-name">viya_bridge_connection.sas</span><span class="code-language">SAS</span></div><pre><code id="codeOutput"></code></pre></div>
             <div class="code-note"><span class="note-mark">i</span><span>Credentials never enter this generated file. The auth domain resolves them on the SAS compute server.</span></div>
           </section>
@@ -78,7 +78,7 @@
 
         <aside class="side-column">
           <section class="status-card">
-            <div class="status-card-top"><span class="section-kicker">Viya connection</span><span class="connected-badge"><span class="status-dot"></span> Simulated</span></div>
+            <div class="status-card-top"><span class="section-kicker">Viya connection</span><span class="connected-badge" id="connectBadge"><span class="status-dot"></span> Simulated</span></div>
             <h2>Ready for a<br><em>conversation.</em></h2>
             <p>This demo models the handoff a Viya connector would make. Swap the simulator for a secure backend when your tenant endpoint is ready.</p>
             <button class="outline-button" id="connectButton"><span class="pulse-icon"></span> Test connection</button>
@@ -93,6 +93,7 @@
   </div>
   <div class="toast" id="toast" role="status"></div>
   <script src="datasets.js"></script>
+  <script src="live.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

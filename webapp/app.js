@@ -102,8 +102,51 @@ $('saveToDisk').addEventListener('change', renderCode);
 $('searchInput').addEventListener('input', (event) => renderCatalog(event.target.value));
 $('copyButton').addEventListener('click', async () => { showToast((await copyText(makeCode())) ? 'SAS code copied to clipboard' : 'Copy failed: select the code and copy it manually'); });
 $('downloadButton').addEventListener('click', () => { const blob = new Blob([makeCode()], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'viya_bridge_connection.sas'; link.click(); URL.revokeObjectURL(link.href); showToast('SAS file downloaded'); });
-$('connectButton').addEventListener('click', () => { const button = $('connectButton'); button.innerHTML = '<span class="pulse-icon"></span> Connection verified'; showToast('Demo handshake complete: CAS server is reachable'); });
-$('readinessButton').addEventListener('click', () => showToast('Readiness checks: keys, gaps, missingness, duplicates'));
+/* Live mode: when served by webapp/server.py the buttons below run real SAS on Viya. */
+const live = { on: false };
+const busy = async (button, label, work) => {
+  const original = button.innerHTML;
+  button.disabled = true;
+  button.textContent = label;
+  try { return await work(); } finally { button.disabled = false; button.innerHTML = original; }
+};
+
+$('connectButton').addEventListener('click', async () => {
+  const button = $('connectButton');
+  if (!live.on) { button.innerHTML = '<span class="pulse-icon"></span> Connection verified'; showToast('Demo handshake complete: CAS server is reachable'); return; }
+  try {
+    const res = await busy(button, 'Connecting...', () => fetch('/api/status?deep=1').then((r) => r.json().then((j) => { if (!r.ok || !j.ok) throw new Error(j.error || 'Connection failed'); return j; })));
+    $('connectionResult').innerHTML = `<span class="result-icon">✓</span><span><strong>Connected to Viya</strong><small>${res.name || res.user} · ${res.context}</small></span>`;
+    showToast('Connected to Viya as ' + res.user);
+  } catch (err) { Live.fail('Connection test failed', err); }
+});
+
+$('runButton').addEventListener('click', async () => {
+  const source = value('sourceTable');
+  try {
+    const res = await busy($('runButton'), 'Loading...', () => Live.post('/api/load', { source, target: value('targetTable') }));
+    Live.show(`${res.source} loaded into CASUSER.${res.target}`, `${res.rows.toLocaleString('en-US')} rows copied from Databricks and promoted. Targets are always written to your CASUSER caslib, because DB_DEMO is a read-only Databricks caslib.`);
+    $('pipelineCaslib').textContent = `CASUSER.${res.target} · promoted`;
+  } catch (err) { Live.fail('Load failed', err); }
+});
+
+$('readinessButton').addEventListener('click', async () => {
+  if (!live.on) { showToast('Readiness checks: keys, gaps, missingness, duplicates'); return; }
+  const table = value('targetTable') || value('sourceTable');
+  try {
+    const res = await busy($('readinessButton'), 'Profiling...', () => Live.post('/api/profile', { table }));
+    Live.show(`Readiness check for ${res.table}`, 'Row counts, missing values and ranges per numeric column, computed in CAS.', res);
+  } catch (err) { Live.fail('Readiness check needs the table loaded first. Use Load into Viya.', err); }
+});
+
+Live.ready().then((status) => {
+  if (!status) return;
+  live.on = true;
+  $('runButton').hidden = false;
+  const badge = $('connectBadge');
+  if (status.ok) { badge.innerHTML = `<span class="status-dot"></span> Live · ${status.user}`; }
+  else { badge.innerHTML = '<span class="status-dot"></span> Server up, Viya not connected'; showToast(status.error); }
+});
 $('helpButton').addEventListener('click', () => showToast('Choose a method, tune the recipe, then generate SAS'));
 
 renderCode();
