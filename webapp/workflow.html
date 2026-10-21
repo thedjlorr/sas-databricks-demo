@@ -58,7 +58,7 @@
             <div class="panel-head"><div class="step-tag">03 / MODEL</div><span class="panel-state model-state">Model Studio · AutoML</span></div>
             <h2>Find the champion model</h2><p class="panel-copy">Give the run a business question. Model Studio will compare candidates and return a customer-level risk score for the selected population.</p>
             <div class="model-prompt"><span class="prompt-mark">✦</span><textarea id="modelPrompt" rows="2">Predict the likelihood that a customer will become seriously delinquent in the next 90 days.</textarea><button class="run-button" id="runModel">Run AutoML <span>↗</span></button></div>
-            <div class="model-result" id="modelResult" hidden><div class="champion-badge">CHAMPION</div><div><strong>Ensemble</strong><small>Champion of 5 candidates · 13,492 accounts · validation AUC 0.949</small></div><span class="model-status">Complete</span></div>
+            <div class="model-result" id="modelResult" hidden><div class="champion-badge">CHAMPION</div><div><strong id="modelName">Ensemble</strong><small id="modelDetail">Champion of 5 candidates · 13,492 accounts · validation AUC 0.949</small></div><span class="model-status">Complete</span></div>
             <div class="save-row" id="saveRow" hidden><label class="toggle"><input type="checkbox" id="saveScores"><span class="toggle-ui"></span><span><strong>Save customer scores</strong><small>Customer number, account number, and risk score</small></span></label><button class="save-button" id="saveButton" disabled>Save scored dataset</button></div>
           </section>
 
@@ -121,6 +121,7 @@ quit;</code></pre></div>
   </div>
   <div class="toast" id="toast" role="status"></div>
   <script src="datasets.js"></script>
+  <script src="live.js"></script>
   <script src="workflow.js"></script>
 </body>
 </html>
