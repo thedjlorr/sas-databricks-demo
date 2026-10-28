@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NMAC Collections on Viya and Snowflake</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="hero">
+  <div class="hero-bar">
+    <span class="pill"><i class="dot"></i>SNOWLIB &rarr; RND_DB.SEFORD</span><span class="pill soft" id="mode">Checking...</span>
+  </div>
+  <div class="hero-main">
+    <div class="logo-tile"><img src="assets/nissan_logo.png" alt="Nissan"></div>
+    <div class="hero-text">
+      <div class="eyebrow">Nissan Motor Acceptance Company &nbsp;|&nbsp; Collections</div>
+      <h1>From collections data<br>to collections <em>decisions</em></h1>
+      <p>Auto loan data read live from Snowflake, a governed default-risk model and ETS forecast in SAS Viya, and scores written back to Snowflake for collectors to act on.</p>
+      <div class="hero-flow"><span>Snowflake</span><i>&rarr;</i><span>SNOWLIB</span><i>&rarr;</i><span>SAS Viya</span><i>&rarr;</i><span>Collectors</span><i>&rarr;</i><span class="back">Snowflake</span></div>
+    </div>
+    <div class="hero-stats">
+      <div><b>5,148</b><small>active loans</small></div>
+      <div><b>4,685</b><small>customers</small></div>
+      <div><b>2.7%</b><small>30+ days past due</small></div>
+      <div><b>$109M</b><small>outstanding</small></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs" role="tablist">
+  <button data-tab="data" class="on">Snowflake data</button>
+  <button data-tab="arch">Architecture</button>
+  <button data-tab="kpi">Portfolio overview</button>
+  <button data-tab="forecast">12-month outlook</button>
+  <button data-tab="ets">ETS forecast</button>
+  <button data-tab="heatmap">Risk heatmap</button>
+  <button data-tab="drivers">Risk drivers</button>
+  <button data-tab="dealers">Dealer view</button>
+  <button data-tab="worklist">Collector worklist</button>
+</nav>
+
+<main id="view"></main>
+<footer>Synthetic NMAC-style auto loan data built for this demo, not NMAC customer data. Figures are results of the SAS programs in this project run on Viya on 27 Oct 2026. Expected loss uses an assumed 50% loss given default.</footer>
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="code.js"></script>
+<script src="static_data.js"></script>
+<script src="chart.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

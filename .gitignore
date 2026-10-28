@@ -1,6 +1,9 @@
 # Credentials — never commit
 .env
 *.pem
+refresh_token.txt
+access_token.txt
+*.refresh_token
 
 # SAS / Python scratch
 *.log
