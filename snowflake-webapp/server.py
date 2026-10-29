@@ -13,6 +13,8 @@ then open http://127.0.0.1:4174
 """
 import importlib.util
 import os
+import subprocess
+import sys
 import threading
 from pathlib import Path
 
@@ -58,6 +60,22 @@ def viya_error(_request, exc):
 @app.get("/api/status")
 def status():
     return vb.status()
+
+
+@app.post("/api/refresh_token")
+def refresh_token():
+    """Run starter/refresh_token.py (renews SAS_VIYA_TOKEN in the repo .env). Needs no valid token to start."""
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(REPO / "starter" / "refresh_token.py")],
+            cwd=str(REPO), stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=90,
+        )
+    except subprocess.TimeoutExpired:
+        raise ViyaError("Token refresh timed out after 90 seconds.", 504)
+    tail = " ".join((proc.stdout + " " + proc.stderr).split())[-300:]
+    if proc.returncode != 0:
+        raise ViyaError("Token refresh needs a sign-in. In a terminal run: python starter\\refresh_token.py. " + tail, 400)
+    return {"ok": True, "message": tail}
 
 
 @app.post("/api/check")

@@ -62,13 +62,19 @@
          <div class="tools"><button class="btn" data-act="writeback" id="wbbtn" disabled>Step 2: Write scores back to Snowflake</button><span class="muted">${live.score ? "Tick the box to enable." : "Unlocks after step 1."}</span></div>`;
     return `<div class="card"><h2>Write-back: scores return to Snowflake</h2>${flow}${status}${live.on ? summary : ""}${act}<div id="wb-out" class="muted"></div></div>`;
   }
-  const connectCard = () => !live.on ? "" : `<div class="card"><h2>Live connection</h2><p class="muted">Runs SAS on Viya against SNOWLIB. Reads only, nothing is written to Snowflake.</p><div class="tools"><button class="btn" data-act="check">Test SNOWLIB connection</button><button class="btn" data-act="load">Load the loan tables into Viya</button></div><div id="conn-out" class="muted">Not run yet.</div></div>`;
+  const connectCard = () => !(live.on || live.serverUp) ? "" : `<div class="card"><h2>Live connection</h2><p class="muted">${live.on ? "Runs SAS on Viya against SNOWLIB. Reads only, nothing is written to Snowflake." : "The server is running but Viya rejected the saved login (the token lasts about 12 hours). Renew it, then the live buttons come back."}</p><div class="tools">${live.on ? `<button class="btn" data-act="check">Test SNOWLIB connection</button>` : ""}<button class="btn alt" data-act="token" title="Runs starter/refresh_token.py on this machine">Refresh Viya token</button>${live.on ? `<button class="btn" data-act="load">Load the loan tables into Viya</button>` : ""}</div><div id="conn-out" class="muted">${live.on ? "Not run yet." : "Token expired. Click Refresh Viya token."}</div></div>`;
 
   async function runAct(act, btn) {
     const out = $("#conn-out");
     btn.disabled = true;
     try {
-      if (act === "check") {
+      if (act === "token") {
+        out.textContent = "Renewing the Viya token (runs starter/refresh_token.py)...";
+        await api("refresh_token");
+        toast("Viya token renewed");
+        await detectLive();
+        return;
+      } else if (act === "check") {
         out.textContent = "Asking Snowflake...";
         const r = objs(await api("check"))[0];
         out.innerHTML = `Snowflake ${esc(r.sf_version)} answered as user <b>${esc(r.sf_user)}</b>, role ${esc(r.sf_role)}, warehouse ${esc(r.sf_warehouse)}, server time ${esc(r.sf_time)}. These values come from Snowflake, not from a copy.`;
@@ -92,7 +98,7 @@
       live.busy = "";
       const wo = $("#wb-out");
       if (act === "writeback" && wo) wo.innerHTML = `<span class="err">${esc(e.message)}</span>`;
-      else if (out && (act === "check" || act === "load")) out.innerHTML = `<span class="err">${esc(e.message)}</span>`;
+      else if (out && (act === "check" || act === "load" || act === "token")) out.innerHTML = `<span class="err">${esc(e.message)}</span>`;
       else { toast("Failed: " + e.message.slice(0, 90)); show(current); }
     }
     btn.disabled = btn.id === "wbbtn" ? !($("#wbok") && $("#wbok").checked) : false;
@@ -236,13 +242,15 @@
   }
   async function detectLive() {
     const badge = $("#mode");
-    try {
-      const j = await (await fetch("/api/status")).json();
-      if (!j.ok) throw new Error(j.error);
-      live.on = true; live.user = j.user;
+    let j = null;
+    try { j = await (await fetch("/api/status")).json(); } catch (e) { j = null; }
+    if (j && j.ok) {
+      live.on = true; live.serverUp = true; live.user = j.user;
       badge.innerHTML = `<i class="dot"></i>Live: ${esc(j.user)}`;
       api("writeback_status").then(w => { const r = objs(w)[0]; if (r && r.sf_rows != null) { live.wb = { sf_rows: r.sf_rows, created: r.created }; if (current === "arch") show("arch"); } }).catch(() => {});
-    } catch (e) { live.on = false; badge.textContent = "Static demo"; }
+    } else if (j && j.error) {
+      live.on = false; live.serverUp = true; badge.textContent = "Viya token expired";
+    } else { live.on = false; live.serverUp = false; badge.textContent = "Static demo"; }
     show(current);
   }
   $("#tabs").onclick = e => { const b = e.target.closest("button"); if (b) { window.scrollTo(0, 0); show(b.dataset.tab); } };
